@@ -1,48 +1,14 @@
-import { useState } from 'react';
-import { Plus, Search, Edit, Trash2, UserPlus, MapPin, Phone, Clock } from 'lucide-react';
+import { useState, useEffect } from "react";   //  add useEffect here
 
-// Mock data for demo
-const mockAgents = [
-  { 
-    id: 1, 
-    name: 'Mike Johnson', 
-    email: 'mike@emergency.com', 
-    phone: '+1-555-0101',
-    location: 'Downtown District',
-    specialization: 'Fire Rescue',
-    status: 'available',
-    availability: '24/7',
-    rating: 4.8,
-    joinedAt: '2023-06-15'
-  },
-  { 
-    id: 2, 
-    name: 'Sarah Williams', 
-    email: 'sarah@emergency.com', 
-    phone: '+1-555-0102',
-    location: 'North District',
-    specialization: 'Medical Emergency',
-    status: 'on-call',
-    availability: 'Night Shift',
-    rating: 4.9,
-    joinedAt: '2023-08-20'
-  },
-  { 
-    id: 3, 
-    name: 'David Chen', 
-    email: 'david@emergency.com', 
-    phone: '+1-555-0103',
-    location: 'South District',
-    specialization: 'Police Support',
-    status: 'unavailable',
-    availability: 'Day Shift',
-    rating: 4.7,
-    joinedAt: '2023-09-10'
-  },
-];
+import { Plus, Search, Edit, Trash2, UserPlus, MapPin, Phone, Clock } from 'lucide-react';
+import { AgentsAPI } from "../services/api";   //  use AgentsAPI not UsersAPI
+ 
+
+
+
 
 export default function Agents() {
-  const [agents, setAgents] = useState(mockAgents);
+const [agents, setAgents] = useState([]); 
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingAgent, setEditingAgent] = useState(null);
@@ -55,6 +21,11 @@ export default function Agents() {
     status: 'available',
     availability: '24/7'
   });
+useEffect(() => {
+  AgentsAPI.list()
+    .then((data) => setAgents(data.items || []))
+    .catch((err) => console.error("Error loading agents:", err));
+}, []);
 
   const filteredAgents = agents.filter(agent =>
     agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -90,7 +61,7 @@ export default function Agents() {
       location: agent.location, 
       specialization: agent.specialization, 
       status: agent.status, 
-      availability: agent.availability 
+      
     });
     setShowAddForm(true);
   };

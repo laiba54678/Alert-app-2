@@ -1,24 +1,56 @@
-import { useState } from 'react';
+// import { useState } from 'react';
 import { Plus, Search, Edit, Trash2, UserPlus } from 'lucide-react';
+import { UsersAPI } from '../services/api';   
+import { useState, useEffect } from "react";  //  add useEffect here
 
-// Mock data for demo
-const mockUsers = [
-  { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'active', createdAt: '2024-01-15' },
-  { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user', status: 'active', createdAt: '2024-01-20' },
-  { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'user', status: 'inactive', createdAt: '2024-02-01' },
-];
+// // Mock data for demo
+// const mockUsers = [
+//   { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'active', createdAt: '2024-01-15' },
+//   { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user', status: 'active', createdAt: '2024-01-20' },
+//   { id: 3, name: 'Bob Johnson', email: 'bob@example.com', role: 'user', status: 'inactive', createdAt: '2024-02-01' },
+// ];
 
 export default function Users() {
-  const [users, setUsers] = useState(mockUsers);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showAddForm, setShowAddForm] = useState(false);
-  const [editingUser, setEditingUser] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    role: 'user',
-    status: 'active'
+  const [users, setUsers] = useState([]);   // start empty
+  const [searchTerm, setSearchTerm] = useState("");
+const [showAddForm, setShowAddForm] = useState(false);
+const [editingUser, setEditingUser] = useState(null);
+const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    role: "user",
+    status: "active",
   });
+  // fetch users from backend
+  useEffect(() => {
+    UsersAPI.list()
+      .then((data) => {
+        setUsers(data.items || []);   // backend returns { items: [...] }
+      })
+      .catch((err) => console.error("Error loading users:", err));
+  }, []);
+
+  // filter users by search term
+  // const filteredUsers = users.filter(
+  //   (user) =>
+  //     user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //     user.role?.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
+
+// export default function Users() {
+// //  const [users, setUsers] = useState(mockUsers);
+//   const [searchTerm, setSearchTerm] = useState('');
+//   const [showAddForm, setShowAddForm] = useState(false);
+//   const [editingUser, setEditingUser] = useState(null);
+//   const [formData, setFormData] = useState({
+//     name: '',
+//     email: '',
+//     role: 'user',
+//     status: 'active'
+//   });
+
+
 
   const filteredUsers = users.filter(user =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

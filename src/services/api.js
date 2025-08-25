@@ -12,12 +12,14 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+
 export const AuthAPI = {
   async login(credentials) {
-    const { data } = await apiClient.post('/auth/login', credentials);
+    const { data } = await apiClient.post('/login', credentials); // <-- FIXED
     return data;
   },
 };
+
 
 export const UsersAPI = {
   list: (params) => apiClient.get('/users', { params }).then(r => r.data),
